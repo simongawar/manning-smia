@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM amazoncorretto:21-alpine as build
+FROM amazoncorretto:21-alpine AS build
 
 LABEL maintainer="Illary Huaylupo <illaryhs@gmail.com>"
 
