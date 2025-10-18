@@ -2,13 +2,13 @@ package com.optimagrowth.license.utils;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,28 +16,35 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserContextFilter implements Filter {
+
     private static final Logger logger = LoggerFactory.getLogger(UserContextFilter.class);
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
 
-
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
-        UserContextHolder.getContext().setCorrelationId(  httpServletRequest.getHeader(UserContext.CORRELATION_ID) );
-        UserContextHolder.getContext().setUserId(httpServletRequest.getHeader(UserContext.USER_ID));
-        UserContextHolder.getContext().setAuthToken(httpServletRequest.getHeader(UserContext.AUTH_TOKEN));
-        UserContextHolder.getContext().setOrganizationId(httpServletRequest.getHeader(UserContext.ORGANIZATION_ID));
+        UserContext context = new UserContext();
+        context.setCorrelationId(httpServletRequest.getHeader(UserContext.CORRELATION_ID));
+        context.setUserId(httpServletRequest.getHeader(UserContext.USER_ID));
+        context.setAuthToken(httpServletRequest.getHeader(UserContext.AUTH_TOKEN));
+        context.setOrganizationId(httpServletRequest.getHeader(UserContext.ORGANIZATION_ID));
 
-        logger.debug("UserContextFilter Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
+        UserContextHolder.setContext(context);
 
-        filterChain.doFilter(httpServletRequest, servletResponse);
+        logger.debug("UserContextFilter Correlation id: {}", context.getCorrelationId());
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // No initialization needed
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+        // No cleanup needed
+    }
 }

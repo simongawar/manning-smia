@@ -1,18 +1,18 @@
-## Spring Microservices in Action - Second Edition. Chapter 7
+# Spring Microservices in Action - Second Edition. Chapter 7
 
-# Introduction
+Introduction
 Welcome to Spring Microservices in Action, Chapter 7.  Chapter 7 does not introduce any new services. Instead it focuses on how to use Spring Cloud and Resilience4j project to help protect service clients from failing or poorly behaving services. This chapter will introduce you to the concepts of fail-fast service calls, bulkheads and fallbacks for when a client call fails. 
 
-1.  A Spring Cloud Config server that is deployed as Docker container and can manage a services configuration information using a file system/ classpath or GitHub-based repository.
+1. A Spring Cloud Config server that is deployed as Docker container and can manage a services configuration information using a file system/ classpath or GitHub-based repository.
 2. A Eureka server running as a Spring-Cloud based service. This service will allow multiple service instances to register with it. Clients that need to call a service will use Eureka to lookup the physical location of the target service.
-3.  A organization service that will manage organization data used within Ostock.
-4.  A licensing service that will manage licensing data used within Ostock.
-5.  A Postgres SQL database used to hold the data.
+3. A organization service that will manage organization data used within Ostock.
+4. A licensing service that will manage licensing data used within Ostock.
+5. A Postgres SQL database used to hold the data.
 
-## Initial Configuration
-1.	Apache Maven (http://maven.apache.org)  All of the code examples in this book have been compiled with Java version 11.
-2.	Git Client (http://git-scm.com)
-3.  Docker(https://www.docker.com/products/docker-desktop)
+Initial Configuration
+1.Apache Maven (http://maven.apache.org)  All of the code examples in this book have been compiled with Java version 11.
+2.Git Client (http://git-scm.com)
+3.Docker(https://www.docker.com/products/docker-desktop)
 
 
 ## How To Use
@@ -43,16 +43,16 @@ Will execute the [Spotify dockerfile plugin](https://github.com/spotify/dockerfi
 
 # The Run command
 
-This command will run our services using the docker-compose.yml file located in the /docker directory. 
+This command will run our services using the docker-compose.yml file located in the /docker directory.
 
 If everything starts correctly you should see a bunch of Spring Boot information fly by on standard out.  At this point all of the services needed for the chapter code examples will be running.
 
-# Database
+Database
 You can find the database script as well in the docker directory.
 
-## Contact
+Contact
 
 I'd like you to send me an email on <illaryhs@gmail.com> about anything you'd want to say about this software.
 
-### Contributing
+Contributing
 Feel free to file an issue if it doesn't work for your code sample. Thanks.
