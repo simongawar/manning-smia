@@ -1,36 +1,21 @@
-CREATE TABLE IF NOT EXISTS public.organizations
-(
-    organization_id text COLLATE pg_catalog."default" NOT NULL,
-    name text COLLATE pg_catalog."default",
-    contact_name text COLLATE pg_catalog."default",
-    contact_email text COLLATE pg_catalog."default",
-    contact_phone text COLLATE pg_catalog."default",
-    CONSTRAINT organizations_pkey PRIMARY KEY (organization_id)
-)
+CREATE TABLE IF NOT EXISTS organizations (
+    organization_id VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    contact_name VARCHAR(255),
+    contact_email VARCHAR(255),
+    contact_phone VARCHAR(255),
+    PRIMARY KEY (organization_id)
+);
 
-TABLESPACE pg_default;
-
-ALTER TABLE public.organizations
-    OWNER to postgres;
-
-
-CREATE TABLE IF NOT EXISTS public.licenses
-(
-    license_id text COLLATE pg_catalog."default" NOT NULL,
-    organization_id text COLLATE pg_catalog."default" NOT NULL,
-    description text COLLATE pg_catalog."default",
-    product_name text COLLATE pg_catalog."default" NOT NULL,
-    license_type text COLLATE pg_catalog."default" NOT NULL,
-    comment text COLLATE pg_catalog."default",
-    CONSTRAINT licenses_pkey PRIMARY KEY (license_id),
-    CONSTRAINT licenses_organization_id_fkey FOREIGN KEY (organization_id)
-        REFERENCES public.organizations (organization_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE public.licenses
-    OWNER to postgres;
+CREATE TABLE IF NOT EXISTS licenses (
+    license_id VARCHAR(255) NOT NULL,
+    organization_id VARCHAR(255) NOT NULL,
+    description TEXT,
+    product_name VARCHAR(255) NOT NULL,
+    license_type VARCHAR(255) NOT NULL,
+    comment TEXT,
+    PRIMARY KEY (license_id),
+    FOREIGN KEY (organization_id) REFERENCES organizations (organization_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
