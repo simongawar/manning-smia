@@ -13,7 +13,7 @@ spring:
           search-locations: classpath:/config
         # The 'git' section is now correctly commented out, preventing the Git URI error.
         #git:
-        #  uri: https://github.com/ihuaylupo/config.git
+        #  uri: https://github.com/simongawar/SFWE-510-Cloud-Native-Project-manning-smia.git
         #  searchPaths: licensingservice
     
 server:
