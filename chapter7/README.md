@@ -20,7 +20,7 @@ To clone and run this application, you'll need [Git](https://git-scm.com), [Mave
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/ihuaylupo/manning-smia
+$ git clone https://github.com/simongawar/SFWE-510-Cloud-Native-Project-manning-smia.git
 
 # Go into the repository, by changing to the directory where you have downloaded 
 
