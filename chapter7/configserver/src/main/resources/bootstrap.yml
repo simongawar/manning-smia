@@ -3,15 +3,18 @@ spring:
     name: config-server
   profiles:
     active:
-    - native
+    - native # <-- ACTIVATING THE NATIVE PROFILE
   cloud:
     config:
       server:
         native:
+          # TELLS THE SERVER TO LOOK FOR CONFIG FILES (e.g., licensing-service.yml) 
+          # in the 'config' directory on the classpath (e.g., src/main/resources/config)
           search-locations: classpath:/config
+        # The 'git' section is now correctly commented out, preventing the Git URI error.
         #git:
-         #   uri: https://github.com/ihuaylupo/config.git
-         #   searchPaths: licensingservice
+        #  uri: https://github.com/ihuaylupo/config.git
+        #  searchPaths: licensingservice
     
 server:
   port: 8071
