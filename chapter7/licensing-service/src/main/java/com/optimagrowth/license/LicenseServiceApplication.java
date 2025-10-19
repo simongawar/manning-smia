@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient; // KEEP this
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient; // Correct: Generic discovery client
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @SpringBootApplication
 @RefreshScope
-/**@EnableDiscoveryClient // SUFFICIENT for Eureka when dependency is present**/
+@EnableDiscoveryClient // Correct: Replaced @EnableEurekaClient
 @EnableFeignClients
 public class LicenseServiceApplication {
 
@@ -39,7 +39,7 @@ public class LicenseServiceApplication {
         return messageSource;
     }
 
-    @LoadBalanced
+    @LoadBalanced // Correct: Enables client-side load balancing
     @Bean
     public RestTemplate getRestTemplate(){
         return new RestTemplate();
