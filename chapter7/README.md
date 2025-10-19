@@ -7,7 +7,7 @@ Welcome to Spring Microservices in Action, Chapter 7.  Chapter 7 does not introd
 2. A Eureka server running as a Spring-Cloud based service. This service will allow multiple service instances to register with it. Clients that need to call a service will use Eureka to lookup the physical location of the target service.
 3. A organization service that will manage organization data used within Ostock.
 4. A licensing service that will manage licensing data used within Ostock.
-5. A Postgres SQL database used to hold the data.
+5. A MySQL database used to hold the data.
 
 Initial Configuration
 1.Apache Maven (<http://maven.apache.org>)  All of the code examples in this book have been compiled with Java version 11.
@@ -16,7 +16,7 @@ Initial Configuration
 
  How To Use
 
-To clone and run this application, you'll need [Git](https://git-scm.com), [Maven](https://maven.apache.org/), [Java 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html). From your command line:
+To clone and run this application, you'll need [Git](https://git-scm.com), [Maven](https://maven.apache.org/), [Java 21](https://www.oracle.com/technetwork/java/javase/downloads/jdk21-downloads-5066655.html). From your command line:
 
 ```bash
 # Clone this repository
