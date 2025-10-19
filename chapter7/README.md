@@ -44,7 +44,7 @@ docker build --build-arg JAR_FILE=your-app.jar -t your-dockerhub-username/your-a
 
 Replace:
 -your-app.jar`with the actual name of your JAR file.
--`your-dockerhub-username/your-app-name` with your Docker Hub username and desired image name.
+-`your-dockerhub-gawardak004/your-app-name` with your Docker Hub username and desired image name.
 
 2.Test the Docker Container Locally**
 
