@@ -30,124 +30,137 @@ import io.github.resilience4j.retry.annotation.Retry;
 @Service
 public class LicenseService {
 
-	@Autowired
-	MessageSource messages;
+    @Autowired
+    MessageSource messages;
 
-	@Autowired
-	private LicenseRepository licenseRepository;
+    @Autowired
+    private LicenseRepository licenseRepository;
 
-	@Autowired
-	ServiceConfig config;
+    @Autowired
+    ServiceConfig config;
 
-	@Autowired
-	OrganizationFeignClient organizationFeignClient;
+    @Autowired
+    OrganizationFeignClient organizationFeignClient;
 
-	@Autowired
-	OrganizationRestTemplateClient organizationRestClient;
+    @Autowired
+    OrganizationRestTemplateClient organizationRestClient;
 
-	@Autowired
-	OrganizationDiscoveryClient organizationDiscoveryClient;
+    @Autowired
+    OrganizationDiscoveryClient organizationDiscoveryClient;
 
-	private static final Logger logger = LoggerFactory.getLogger(LicenseService.class);
+    private static final Logger logger = LoggerFactory.getLogger(LicenseService.class);
 
-	public License getLicense(String licenseId, String organizationId, String clientType){
-		License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
-		if (null == license) {
-			throw new IllegalArgumentException(String.format(messages.getMessage("license.search.error.message", null, null),licenseId, organizationId));	
-		}
+    public License getLicense(String licenseId, String organizationId, String clientType) {
+        License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
+        if (license == null) {
+            throw new IllegalArgumentException(String.format(
+                messages.getMessage("license.search.error.message", null, null),
+                licenseId, organizationId));
+        }
 
-		Organization organization = retrieveOrganizationInfo(organizationId, clientType);
-		if (null != organization) {
-			license.setOrganizationName(organization.getName());
-			license.setContactName(organization.getContactName());
-			license.setContactEmail(organization.getContactEmail());
-			license.setContactPhone(organization.getContactPhone());
-		}
+        Organization organization = retrieveOrganizationInfo(organizationId, clientType);
+        if (organization != null) {
+            license.setOrganizationName(organization.getName());
+            license.setContactName(organization.getContactName());
+            license.setContactEmail(organization.getContactEmail());
+            license.setContactPhone(organization.getContactPhone());
+        }
 
-		return license.withComment(config.getProperty());
-	}
+        return license.withComment(config.getProperty());
+    }
 
-	private Organization retrieveOrganizationInfo(String organizationId, String clientType) {
-		Organization organization = null;
+    private Organization retrieveOrganizationInfo(String organizationId, String clientType) {
+        switch (clientType) {
+            case "feign":
+                logger.info("Using Feign client");
+                return organizationFeignClient.getOrganization(organizationId);
+            case "rest":
+                logger.info("Using RestTemplate client");
+                return organizationRestClient.getOrganization(organizationId);
+            case "discovery":
+                logger.info("Using Discovery client");
+                return organizationDiscoveryClient.getOrganization(organizationId);
+            default:
+                logger.info("Using default RestTemplate client");
+                return organizationRestClient.getOrganization(organizationId);
+        }
+    }
 
-		switch (clientType) {
-		case "feign":
-			System.out.println("I am using the feign client");
-			organization = organizationFeignClient.getOrganization(organizationId);
-			break;
-		case "rest":
-			System.out.println("I am using the rest client");
-			organization = organizationRestClient.getOrganization(organizationId);
-			break;
-		case "discovery":
-			System.out.println("I am using the discovery client");
-			organization = organizationDiscoveryClient.getOrganization(organizationId);
-			break;
-		default:
-			organization = organizationRestClient.getOrganization(organizationId);
-			break;
-		}
+    public License createLicense(License license) {
+        license.setLicenseId(UUID.randomUUID().toString());
+        licenseRepository.save(license);
+        return license.withComment(config.getProperty());
+    }
 
-		return organization;
-	}
+    public License updateLicense(License license) {
+        licenseRepository.save(license);
+        return license.withComment(config.getProperty());
+    }
 
-	public License createLicense(License license){
-		license.setLicenseId(UUID.randomUUID().toString());
-		licenseRepository.save(license);
+    public String deleteLicense(String licenseId) {
+        License license = new License();
+        license.setLicenseId(licenseId);
+        licenseRepository.delete(license);
+        return String.format(messages.getMessage("license.delete.message", null, null), licenseId);
+    }
 
-		return license.withComment(config.getProperty());
-	}
+    /**
+     * Retrieves licenses by organization with fault tolerance.
+     * Uses Resilience4j annotations and custom fallback.
+     */
+    @CircuitBreaker(name = "licenseService", fallbackMethod = "customFallbackLicenseList")
+    @RateLimiter(name = "licenseService", fallbackMethod = "customFallbackLicenseList")
+    @Retry(name = "retryLicenseService", fallbackMethod = "customFallbackLicenseList")
+    @Bulkhead(name = "bulkheadLicenseService", type = Type.THREADPOOL, fallbackMethod = "customFallbackLicenseList")
+    public List<License> getLicensesByOrganization(String organizationId) throws TimeoutException {
+        logger.debug("getLicensesByOrganization Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
+        randomlyRunLong();
+        return licenseRepository.findByOrganizationId(organizationId);
+    }
 
-	public License updateLicense(License license){
-		licenseRepository.save(license);
+    /**
+     * Custom fallback method triggered when getLicensesByOrganization fails.
+     * Includes detailed logging and a customized fallback response.
+     */
+    public List<License> customFallbackLicenseList(String organizationId, Throwable throwable) {
+        logger.error("CUSTOM FALLBACK ACTIVATED for organizationId: {}", organizationId);
+        logger.error("Reason: {}", throwable.getMessage(), throwable);
+        logger.warn("Returning default license list due to service failure or timeout.");
 
-		return license.withComment(config.getProperty());
-	}
+        License fallbackLicense = new License();
+        fallbackLicense.setLicenseId("CUSTOM-FALLBACK-000");
+        fallbackLicense.setOrganizationId(organizationId);
+        fallbackLicense.setProductName("Fallback License");
+        fallbackLicense.setLicenseType("Trial");
+        fallbackLicense.setComment("This is a custom fallback response. Please try again later.");
 
-	public String deleteLicense(String licenseId){
-		String responseMessage = null;
-		License license = new License();
-		license.setLicenseId(licenseId);
-		licenseRepository.delete(license);
-		responseMessage = String.format(messages.getMessage("license.delete.message", null, null),licenseId);
-		return responseMessage;
+        List<License> fallbackList = new ArrayList<>();
+        fallbackList.add(fallbackLicense);
 
-	}
+        logger.info("Fallback license list prepared for organizationId: {}", organizationId);
+        return fallbackList;
+    }
 
-	@CircuitBreaker(name = "licenseService", fallbackMethod = "buildFallbackLicenseList")
-	@RateLimiter(name = "licenseService", fallbackMethod = "buildFallbackLicenseList")
-	@Retry(name = "retryLicenseService", fallbackMethod = "buildFallbackLicenseList")
-	@Bulkhead(name = "bulkheadLicenseService", type= Type.THREADPOOL, fallbackMethod = "buildFallbackLicenseList")
-	public List<License> getLicensesByOrganization(String organizationId) throws TimeoutException {
-		logger.debug("getLicensesByOrganization Correlation id: {}",
-				UserContextHolder.getContext().getCorrelationId());
-		randomlyRunLong();
-		return licenseRepository.findByOrganizationId(organizationId);
-	}
+    /**
+     * Simulates a delay randomly to trigger timeout.
+     */
+    private void randomlyRunLong() throws TimeoutException {
+        Random rand = new Random();
+        int randomNum = rand.nextInt(3) + 1;
+        if (randomNum == 3) sleep();
+    }
 
-	@SuppressWarnings("unused")
-	private List<License> buildFallbackLicenseList(String organizationId, Throwable t){
-		List<License> fallbackList = new ArrayList<>();
-		License license = new License();
-		license.setLicenseId("0000000-00-00000");
-		license.setOrganizationId(organizationId);
-		license.setProductName("Sorry no licensing information currently available");
-		fallbackList.add(license);
-		return fallbackList;
-	}
-
-	private void randomlyRunLong() throws TimeoutException{
-		Random rand = new Random();
-		int randomNum = rand.nextInt((3 - 1) + 1) + 1;
-		if (randomNum==3) sleep();
-	}
-	private void sleep() throws TimeoutException{
-		try {
-			System.out.println("Sleep");
-			Thread.sleep(5000);
-			throw new java.util.concurrent.TimeoutException();
-		} catch (InterruptedException e) {
-			logger.error(e.getMessage());
-		}
-	}
+    /**
+     * Simulates a long-running process and throws TimeoutException.
+     */
+    private void sleep() throws TimeoutException {
+        try {
+            logger.info("Simulating delay...");
+            Thread.sleep(5000);
+            throw new TimeoutException("Simulated timeout");
+        } catch (InterruptedException e) {
+            logger.error("Sleep interrupted: {}", e.getMessage());
+            Thread.currentThread().interrupt();
+        }
+    }
 }
