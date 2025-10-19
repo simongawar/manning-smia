@@ -39,19 +39,19 @@ or It looks like I can't directly build or run Docker containers in this environ
 Make sure your terminal is in the same directory as your Dockerfile and JAR file. Then run:
 
 ```bash
-docker build --build-arg JAR_FILE=your-app.jar -t your-dockerhub-username/your-app-name:latest .
+docker build --build-arg JAR_FILE=your-app.jar -t gawardak004/licensing-service:latest .
 ```
 
 Replace:
 -your-app.jar`with the actual name of your JAR file.
--`your-dockerhub-gawardak004/your-app-name` with your Docker Hub username and desired image name.
+-`your-dockerhub-gawardak004/licensing-service` with your Docker Hub username and desired image name.
 
 2.Test the Docker Container Locally**
 
 Run the container to test it:
 
 ```bash
-docker run -p 8080:8080 gawardak004/your-app-name:latest
+docker run -p 8080:8080 gawardak004/licensing-service:latest
 ```
 
 You can then access your app at <http://localhost:8080> if it's a web service.
@@ -69,7 +69,7 @@ docker login
 Then push the image:
 
 ```bash
-docker push your-dockerhub-username/your-app-name:latest
+docker push gawardak004/licensing-service:latest
 ``
 # Now we are going to use docker-compose to start the actual image.  To start the docker image, stay in the directory containing  your chapter 7 source code and  Run the following command: 
 $ docker-compose -f docker/docker-compose.yml up
