@@ -21,9 +21,10 @@
     <properties>
         <java.version>21</java.version>
         <docker.image.prefix>ostock</docker.image.prefix>
-        <spring-cloud.version>2023.0.1</spring-cloud.version>
-        <resilience4j.version>2.2.0</resilience4j.version>
-        <lombok.version>1.18.30</lombok.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
+        <resilience4j.version>2.3.0</resilience4j.version>
+        <lombok.version>1.18.32</lombok.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version> 
     </properties>
 
     <dependencies>
@@ -80,7 +81,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -99,24 +100,27 @@
             </exclusions>
         </dependency>
     </dependencies>
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>${spring-cloud.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <release>${java.version}</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
