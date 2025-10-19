@@ -1,9 +1,9 @@
 # Stage 1: Build
 FROM amazoncorretto:21-alpine AS build
 
-LABEL maintainer="Illary Huaylupo <illaryhs@gmail.com>"
+LABEL maintainer="Simon Gawar g.dakthak@gmail.com"
 
-ARG JAR_FILE
+ARG JAR_FILE=target/licensing-service.jar
 COPY ${JAR_FILE} app.jar
 
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
