@@ -25,7 +25,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docker.image.prefix>ostock</docker.image.prefix>
-        <!-- ADDED: Define Lombok version for compatibility with Java 21 -->
+        <!-- Define Lombok version for compatibility with Java 21 -->
         <lombok.version>1.18.30</lombok.version>
     </properties>
 
@@ -56,8 +56,7 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- ADDED: Lombok Dependency Management (Version is now centrally controlled) -->
-            <!-- CRITICAL: Version 1.18.30 is highly compatible with modern JDKs like Java 21 -->
+            <!-- Lombok Dependency Management (Version is now centrally controlled) -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -69,12 +68,15 @@
 
     <build>
         <plugins>
-            <!-- UPDATED: Explicitly configure compiler settings for Java 21 and Lombok -->
+            <!-- Compiler configuration for Java 21 and Lombok -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <!-- FIX: Explicitly set the version to 3.13.0 (used by Spring Boot 3.5.x) -->
+                <!-- This helps resolve subtle compatibility errors when using the <release> tag -->
+                <version>3.13.0</version> 
                 <configuration>
-                    <!-- Use <release> for strict compatibility checks with JDK 9+ (replaces source/target) -->
+                    <!-- Use <release> for strict compatibility checks with JDK 9+ -->
                     <release>${java.version}</release>
                     <!-- Ensure Lombok is correctly configured as an annotation processor -->
                     <annotationProcessorPaths>
