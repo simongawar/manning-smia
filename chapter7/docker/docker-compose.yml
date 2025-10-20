@@ -49,7 +49,7 @@ services:
           - "eurekaserver"
 
   licensingservice:
-    build: ./licensing-service
+    build: ../licensing-service
     ports:
       - "8080:8080"
     environment:
@@ -67,7 +67,7 @@ services:
       - backend
 
   organizationservice:
-    build: ./organization-service
+    build: ../organization-service
     ports:
       - "8081:8081"
     environment:
