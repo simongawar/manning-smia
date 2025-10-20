@@ -49,7 +49,9 @@ services:
           - "eurekaserver"
 
   licensingservice:
-    image: ostock/licensing-service:0.0.3-SNAPSHOT
+    build: ./licensing-service
+    ports:
+      - "8080:8080"
     environment:
       PROFILE: "dev"
       CONFIGSERVER_URI: "http://configserver:8071"
@@ -61,13 +63,13 @@ services:
         condition: service_healthy
       configserver:
         condition: service_started
-    ports:
-      - "8080:8080"
     networks:
       - backend
 
   organizationservice:
-    image: ostock/organization-service:0.0.1-SNAPSHOT
+    build: ./organization-service
+    ports:
+      - "8081:8081"
     environment:
       PROFILE: "dev"
       CONFIGSERVER_URI: "http://configserver:8071"
@@ -79,8 +81,6 @@ services:
         condition: service_healthy
       configserver:
         condition: service_started
-    ports:
-      - "8081:8081"
     networks:
       - backend
 
