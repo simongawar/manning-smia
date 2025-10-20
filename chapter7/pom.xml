@@ -25,6 +25,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docker.image.prefix>ostock</docker.image.prefix>
+        <!-- ADDED: Define Lombok version for compatibility with Java 21 -->
+        <lombok.version>1.18.30</lombok.version>
     </properties>
 
     <modules>
@@ -53,11 +55,38 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- ADDED: Lombok Dependency Management (Version is now centrally controlled) -->
+            <!-- CRITICAL: Version 1.18.30 is highly compatible with modern JDKs like Java 21 -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
+            <!-- UPDATED: Explicitly configure compiler settings for Java 21 and Lombok -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Use <release> for strict compatibility checks with JDK 9+ (replaces source/target) -->
+                    <release>${java.version}</release>
+                    <!-- Ensure Lombok is correctly configured as an annotation processor -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            
             <!-- Docker Plugin -->
             <plugin>
                 <groupId>com.spotify</groupId>
