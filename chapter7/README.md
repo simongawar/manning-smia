@@ -16,7 +16,7 @@ Initial Configuration
 
  How To Use
 
-To clone and run this application, you'll need [Git](https://git-scm.com), [Maven](https://maven.apache.org/), [Java 21](https://www.oracle.com/technetwork/java/javase/downloads/jdk21-downloads-5066655.html). From your command line:
+To clone and run this application, you'21 need [Git](https://git-scm.com), [Maven](https://maven.apache.org/), [Java 21](https://www.oracle.com/technetwork/java/javase/downloads/jdk21-downloads-5066655.html). From your command line:
 
 ```bash
 # Clone this repository
