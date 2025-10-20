@@ -59,7 +59,4 @@ public class License extends RepresentationModel<License> {
         return this;
     }
 
-    private void setComment(String comment) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

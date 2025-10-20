@@ -31,22 +31,22 @@ import io.github.resilience4j.retry.annotation.Retry;
 public class LicenseService {
 
     @Autowired
-    MessageSource messages;
+    private MessageSource messages;
 
     @Autowired
     private LicenseRepository licenseRepository;
 
     @Autowired
-    ServiceConfig config;
+    private ServiceConfig config;
 
     @Autowired
-    OrganizationFeignClient organizationFeignClient;
+    private OrganizationFeignClient organizationFeignClient;
 
     @Autowired
-    OrganizationRestTemplateClient organizationRestClient;
+    private OrganizationRestTemplateClient organizationRestClient;
 
     @Autowired
-    OrganizationDiscoveryClient organizationDiscoveryClient;
+    private OrganizationDiscoveryClient organizationDiscoveryClient;
 
     private static final Logger logger = LoggerFactory.getLogger(LicenseService.class);
 
@@ -104,10 +104,6 @@ public class LicenseService {
         return String.format(messages.getMessage("license.delete.message", null, null), licenseId);
     }
 
-    /**
-     * Retrieves licenses by organization with fault tolerance.
-     * Uses Resilience4j annotations and custom fallback.
-     */
     @CircuitBreaker(name = "licenseService", fallbackMethod = "customFallbackLicenseList")
     @RateLimiter(name = "licenseService", fallbackMethod = "customFallbackLicenseList")
     @Retry(name = "retryLicenseService", fallbackMethod = "customFallbackLicenseList")
@@ -118,10 +114,6 @@ public class LicenseService {
         return licenseRepository.findByOrganizationId(organizationId);
     }
 
-    /**
-     * Custom fallback method triggered when getLicensesByOrganization fails.
-     * Includes detailed logging and a customized fallback response.
-     */
     public List<License> customFallbackLicenseList(String organizationId, Throwable throwable) {
         logger.error("CUSTOM FALLBACK ACTIVATED for organizationId: {}", organizationId);
         logger.error("Reason: {}", throwable.getMessage(), throwable);
@@ -141,18 +133,12 @@ public class LicenseService {
         return fallbackList;
     }
 
-    /**
-     * Simulates a delay randomly to trigger timeout.
-     */
     private void randomlyRunLong() throws TimeoutException {
         Random rand = new Random();
         int randomNum = rand.nextInt(3) + 1;
         if (randomNum == 3) sleep();
     }
 
-    /**
-     * Simulates a long-running process and throws TimeoutException.
-     */
     private void sleep() throws TimeoutException {
         try {
             logger.info("Simulating delay...");
