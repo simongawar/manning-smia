@@ -27,8 +27,8 @@
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <resilience4j.version>2.3.0</resilience4j.version>
         <lombok.version>1.18.32</lombok.version>
-        <!-- FIXED: Rolling back to widely available 3.11.0 to bypass cached resolution failures. -->
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version> 
+        <!-- FIXED: Stepping back to the highly stable 3.10.1 to attempt to resolve the Fatal error compiling: java.lang.ExceptionInInitializerError, which often points to a compiler version conflict with the specific JDK/Lombok setup. -->
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version> 
     </properties>
 
     <dependencies>
