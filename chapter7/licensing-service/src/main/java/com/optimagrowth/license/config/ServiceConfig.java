@@ -1,16 +1,15 @@
 package com.optimagrowth.license.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import lombok.Getter;
-import lombok.Setter;
+@Component
+public class ServiceConfig {
 
-@Configuration
-@ConfigurationProperties(prefix = "example")
-@Getter @Setter
-public class ServiceConfig{
+    @Value("${example.property:This is the default property value}")
+    private String property;
 
-  private String property;
-    
+    public String getProperty() {
+        return property;
+    }
 }
