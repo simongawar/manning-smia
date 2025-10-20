@@ -2,17 +2,53 @@ package com.optimagrowth.license.model;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-@Getter @Setter @ToString
 public class Organization extends RepresentationModel<Organization> {
 
-	String id;
-    String name;
-    String contactName;
-    String contactEmail;
-    String contactPhone;
-    
+    private String id;
+    private String name;
+    private String contactName;
+    private String contactEmail;
+    private String contactPhone;
+
+    // Getters
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    // Setters
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
 }
